@@ -1,7 +1,8 @@
-const easyDJS = require('../index.ts');
+const easyDJS = require('../index');
+const token = require('./token');
 
 easyDJS.config.set({
-    token: 'OTAyMjYzNzYyMzgyMzY4NzY4.YXb4nA.VB1BduIBXTNJ4sVNNUExg--LVNg',
+    token: token.token,
     prefix: '.',
     guildid: '892820301224751175',
     allowdmcommands: true
