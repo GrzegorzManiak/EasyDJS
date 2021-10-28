@@ -32,6 +32,8 @@ exports.user = class user {
     hasRoles(requiredRoles:string[] | string){
         if(this.#guild === undefined) return;
         return this.#user.then(() => {
+            if(requiredRoles.length === 0) return true;
+
             let pass:boolean = false;
 
             return this.getRolesName().then((roles:string[]) => {

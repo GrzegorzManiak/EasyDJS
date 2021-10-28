@@ -27,13 +27,24 @@ async function start() {
     });
 }
 
-//Handlers
+// Handlers
 client.on('messageCreate', async(interaction: any) => {
     if(interaction.guildId === null)
-        require('./handlers/directMessage').handler(interaction);
+        require('./handlers/directMessage').handler(interaction); // Direct messages
 
     else
-        require('./handlers/guildMessage').handler(interaction);
+        require('./handlers/guildMessage').handler(interaction); // Guild messages
+});
+
+client.on('interactionCreate', async(interaction: any) => {
+    if (interaction?.componentType === 'BUTTON') 
+        require('./handlers/buttonInteractionHandler').handler(interaction); 
+
+    else if (interaction?.componentType === 'SELECT_MENU')
+        require('./handlers/menuInteractionHandler').handler(interaction);
+
+    else if (interaction?.commandName) 
+        require('./handlers/slashCommand').handler(interaction);
 });
 
 module.exports = {

@@ -5,7 +5,7 @@ const bot = require("../"),
 
 import { Schema as CommandSchema } from "../commands";
 
-exports.handler = async (message: any) => {
+exports.handler = async (interaction: any) => {
     // start a performance timer
     let speedTest:number = performance.now();
 
@@ -13,16 +13,16 @@ exports.handler = async (message: any) => {
     if (config.allowdmcommands !== true) return;
 
     // If the message dosent begin with the command prefix, return.
-    if (message.content.split("")[0] !== config.prefix) return;
+    if (interaction.content.split("")[0] !== config.prefix) return;
 
     // Splits the message content up into words eg => aa bb cc = ['aa','bb','cc']
-    let splitMessage: string[] = message.content.split(" ");
+    let parameters:string[] = interaction.content.split(" ");
 
     // Remove the first character from the first item in the array, aka the prefix
-    splitMessage[0] = splitMessage[0]?.substring(1)?.toLowerCase();
+    parameters[0] = parameters[0]?.substring(1)?.toLowerCase();
 
     // Check if the command exists
-    let command: CommandSchema = bot.commands.get(splitMessage[0]);
+    let command:CommandSchema = bot.commands.get(parameters[0]);
 
     // If the command dosent exists, return
     if (command === undefined) return;
@@ -38,26 +38,26 @@ exports.handler = async (message: any) => {
     
     switch ((command.linkedToGuild as boolean)) {
         case true:
-            let user: any = new userHelper.user(message.author.id, config.guildid, bot.client),
-                roles: string[] = await user.getRolesName(),
-                hasPermissions: boolean = (await user.hasRoles(command?.roles?.user)) || config?.devid?.includes(message?.author?.id) || false;
+            let user: any = new userHelper.user(interaction.author.id, config.guildid, bot.client), // get the user
+                roles: string[] = await user.getRolesName(), // Get the users roles
+                hasPermissions: boolean = (await user.hasRoles(command?.roles?.user)) || config?.devid?.includes(interaction?.author?.id) || false; // check if they have permision to exec the command
 
             switch (hasPermissions) {
                 case true:
                     return command.mainFunc({
-                        parameters: splitMessage,
-                        interaction: message,
-                        slashCommand: false,
-                        directMessage: true,
+                        parameters,
+                        interaction,
                         roles,
                         user,
                         speedTest,
-                        performance
+                        performance,
+                        slashCommand: false,
+                        directMessage: true,
                     });
 
                 case false:
-                    return message.channel.send({
-                        content: `<@${message.author.id}> You dont have the sufficient privileges to execute this command.`,
+                    return interaction.reply({
+                        content: `<@${interaction.author.id}> You dont have the sufficient privileges to execute this command.`,
                     });
 
                 default:
@@ -66,12 +66,12 @@ exports.handler = async (message: any) => {
 
         case false:
             return command.mainFunc({
-                parameters: splitMessage,
-                interaction: message,
+                parameters,
+                interaction,
+                speedTest,
+                performance,
                 slashCommand: false,
                 directMessage: true,
-                speedTest,
-                performance
             });
     }
 };
