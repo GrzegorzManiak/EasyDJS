@@ -1,10 +1,14 @@
 const bot = require("../"),
-  userHelper = require("../helpers/userClass.ts"),
-  config = bot.config.get();
+    userHelper = require("../helpers/userClass.ts"),
+    { performance } = require('perf_hooks'),
+    config = bot.config.get();
 
 import { Schema as CommandSchema } from "../commands";
 
 exports.handler = async (message: any) => {
+    // start a performance timer
+    let speedTest:number = performance.now();
+
     // if direct message commands are disabled in the config, return
     if (config.allowdmcommands !== true) return;
 
@@ -31,7 +35,7 @@ exports.handler = async (message: any) => {
         return console.log(
             'You havent defined guildid in the config, dm commands that have "linkedToGuild" set to true wont work without a guildid.'
         );
-
+    
     switch ((command.linkedToGuild as boolean)) {
         case true:
             let user: any = new userHelper.user(message.author.id, config.guildid, bot.client),
@@ -47,6 +51,8 @@ exports.handler = async (message: any) => {
                         directMessage: true,
                         roles,
                         user,
+                        speedTest,
+                        performance
                     });
 
                 case false:
@@ -63,7 +69,9 @@ exports.handler = async (message: any) => {
                 parameters: splitMessage,
                 interaction: message,
                 slashCommand: false,
-                directMessage: true
+                directMessage: true,
+                speedTest,
+                performance
             });
     }
 };

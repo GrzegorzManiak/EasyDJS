@@ -36,7 +36,6 @@ client.on('messageCreate', async(interaction: any) => {
         require('./handlers/guildMessage').handler(interaction);
 });
 
-
 module.exports = {
     start: () => start(),
     config: configHelper,

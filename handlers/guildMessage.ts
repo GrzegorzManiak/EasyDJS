@@ -1,10 +1,14 @@
-const bot = require('../'),
-    userHelper = require('../helpers/userClass.ts'),
+const bot = require("../"),
+    userHelper = require("../helpers/userClass.ts"),
+    { performance } = require('perf_hooks'),
     config = bot.config.get();
 
-import { Schema as CommandSchema } from '../commands'
+import { Schema as CommandSchema } from "../commands";
 
 exports.handler = async(message:any) => {
+    // start a performance timer
+    let speedTest:number = performance.now();
+
     // If the message dosent begin with the command prefix, return.
     if (message.content.split('')[0] !== config.prefix) return;
 
@@ -16,6 +20,8 @@ exports.handler = async(message:any) => {
     
     // Check if the command exists
     let command:CommandSchema = bot.commands.get(splitMessage[0]);
+
+    // If the command dosent exists, return
     if(command === undefined) return;
 
     let user:any = new userHelper.user(message.author.id, message.guild.id, bot.client),
@@ -30,7 +36,9 @@ exports.handler = async(message:any) => {
                 slashCommand: false, 
                 directMessage: false,
                 roles,
-                user 
+                user,
+                speedTest,
+                performance
             });
 
         case false:

@@ -44,6 +44,19 @@ easyDJS.commands.add({
     }
 });
 
+easyDJS.commands.add({
+    details: {
+        commandName: 'ping',
+        commandDescription: 'tests latency'
+    },
+
+    executesInDm: true,
+    linkedToGuild: false,
+
+    mainFunc: async function(input:any){
+        input.interaction.channel.send(`<@${input.interaction.author.id}> Pong and the bot's ping is **${easyDJS.client.ws.ping} ms** round trip, with an **internal speed** speed of **${input.performance.now() - input.speedTest} ms** for this command.`)
+    }
+});
 
 easyDJS.commands.loadSlashCommands(true)
 

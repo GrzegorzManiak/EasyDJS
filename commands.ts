@@ -35,6 +35,8 @@ interface InputSchema {
     parameters: any;
     interaction: any;
     slashCommand: boolean;
+    speedTest:number;
+    performance: any;
     directMessage: boolean;
 }
 

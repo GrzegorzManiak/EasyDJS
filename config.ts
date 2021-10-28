@@ -3,7 +3,7 @@ export interface Schema {
     allowslashcommands: boolean;
     allowdmcommands: boolean;
     allowdminteractions: boolean;
-    guild: string | undefined;
+    guildid: string | undefined;
     prefix: string;
     token: string;
 };
@@ -13,7 +13,7 @@ let ConfigValues:Schema = {
     allowslashcommands: true,
     allowdmcommands: false,
     allowdminteractions: false,
-    guild: undefined,
+    guildid: undefined,
     prefix: '',
     token: '',
 };
