@@ -21,7 +21,7 @@ exports.user = class user {
         return this.#guild;
     }
 
-    sendMessage(content:any | string){
+    sendMessage(content:any){
         if(this.#guild === undefined) return;
         return this.#user.then((usr:any) => {
             return usr.send(content);

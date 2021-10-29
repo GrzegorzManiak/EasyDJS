@@ -23,7 +23,26 @@ easyDJS.commands.add({
 
     mainFunc: function(input:any){
         console.log('1')
-    }
+    },
+
+    parameters: [
+        { 
+            type: 'string',
+            name: 'channel1', 
+            description: 'test', 
+            required: false,
+            choices: [
+                {
+                    name: 'foo1',
+                    value: 'fal1'
+                },
+                {
+                    name: 'foo2',
+                    value: 'fal2'
+                }
+            ]
+        }
+    ]
 });
 
 easyDJS.commands.add({

@@ -5,7 +5,7 @@ const bot = require("../"),
 
 import { Schema as CommandSchema } from "../commands";
 
-exports.handler = async (interaction: any) => {
+exports.handler = async(interaction:any) => {
     // start a performance timer
     let speedTest:number = performance.now();
 

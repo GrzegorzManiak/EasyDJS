@@ -1,6 +1,5 @@
 let addedCommands:any = {};
 const commandHistory:any = {};
-const slashCommandBuilder = require('@discordjs/builders').SlashCommandBuilder;
 
 import { client } from './index';
 
@@ -17,7 +16,7 @@ export interface Schema {
         reaction:[]; // Roles that can interact with reactions attached to the command
     };
 
-    parameters:[]; // Paramters = [{ type:'', name:'', description: '', required: false }]
+    parameters: Array<ParamtersSchema> // Paramters = [{ type:'', name:'', description: '', required: false }]
     executesInDm:boolean; // Can the command execute in the users DM, Will use role data from the server defined in the config.serverid, leave false otherwise
     interactionsInDm:boolean; // If a msg is sent to the user with attached interactables, can the user use them?
     isSlashCommand:boolean; // Can this command be executed with discord slash commands?
@@ -32,7 +31,7 @@ export interface Schema {
     mainFunc:Function
 };
 
-interface InputSchema {
+export interface InputSchema {
     parameters: any;
     interaction: any;
     slashCommand: boolean;
@@ -40,6 +39,19 @@ interface InputSchema {
     performance: any;
     directMessage: boolean;
 }
+
+export interface ParamtersSchema {
+    type: string;
+    name: string;
+    description: string;
+    required?: boolean;
+    choices?: [{
+        name: string;
+        value: string | number;
+    }]
+}
+
+const OPTION_TYPES:string[] = [ 'STRING', 'INTEGER', 'NUMBER', 'BOOLEAN', 'USER', 'CHANNEL', 'ROLE', 'MENTIONABLE', 'SUB_COMMAND', 'SUB_COMMAND_GROUP ' ];
 
 const commandTemplate:Schema = {
     details: {
@@ -116,12 +128,33 @@ function loadSlashCommands(global:boolean) {
         
             Object.keys(addedCommands).forEach(command => {
                 if(addedCommands[command]?.isSlashCommand !== true) return;
-        
-                let data:any = new slashCommandBuilder()
-                    .setName(command) // give the command a name
-                    .setDescription(addedCommands[command].details.commandDescription); // give the command a description
-        
-                commands.create(data).catch((err:any) => {
+                
+                let slashCommand:any = {
+                    name: command,
+                    description: addedCommands[command].details.commandDescription,
+                    options: [],
+                }
+
+                addedCommands[command].parameters.forEach((parameter:ParamtersSchema) => {
+                    if(!OPTION_TYPES.includes(parameter.type.toUpperCase())) return;
+
+                    let param:any = {};
+
+                    param.type = parameter.type.toUpperCase();
+                    param.name = parameter.name;
+                    param.description = parameter.description;
+                    param.required = parameter?.required || false;
+                    param.choices = parameter.choices;
+
+                    slashCommand.options = [...slashCommand.options, param ];
+
+                    console.log(parameter)
+                });
+
+                console.log(slashCommand)
+                commands.create(slashCommand).catch((err:any) => {
+                    console.log(err)
+
                     // You need to allow the bot to add slash commands to your server, most people forget about this and get confused about the error.
                     if(err.httpStatus == 403) console.log(`You need to give the bot oauth the "bot" oauth2 premision to use slash commands on [${guild.id} / ${guild.name}] => https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=applications.commands%20bot`);
                 });
