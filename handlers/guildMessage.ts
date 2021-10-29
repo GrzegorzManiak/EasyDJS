@@ -42,8 +42,10 @@ exports.handler = async(interaction:any) => {
                 performance,
                 slashCommand: false, 
                 directMessage: false,
-            });
-            if(command.removeInvoker === true) interaction.delete().catch();
+                removeInvoker: () => {
+                    interaction.delete().catch();
+                }
+            })
             break;
 
         case false:

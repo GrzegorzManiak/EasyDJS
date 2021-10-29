@@ -1,3 +1,5 @@
 package-lock.json
 node_modules
 tests/token.ts
+lib/*
+!lib/.gitkeep 

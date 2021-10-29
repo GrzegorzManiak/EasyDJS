@@ -212,7 +212,11 @@ easyDJS.commands.add({
     linkedToGuild: false,
 
     mainFunc: async function(input:any){
-        input.interaction.channel.send(`<@${input.interaction.author.id}> Pong and the bot's ping is **${easyDJS.client.ws.ping} ms** round trip, with an **internal speed** speed of **${input.performance.now() - input.speedTest} ms** for this command.`)
+        let content:string = `<@${input.interaction.author.id}> Pong and the bot's ping is **${easyDJS.client.ws.ping} ms** round trip, with an **internal speed** speed of **${input.performance.now() - input.speedTest} ms** for this command.`;
+        
+        input.interaction.reply(content).then(() => {
+            if(input.directMessage === false && input.slashCommand === false) input.removeInvoker();
+        })
     }
 });
 

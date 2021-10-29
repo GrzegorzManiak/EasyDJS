@@ -21,7 +21,6 @@ export interface Schema {
     executesInDm:boolean; // Can the command execute in the users DM, Will use role data from the server defined in the config.serverid, leave false otherwise
     interactionsInDm:boolean; // If a msg is sent to the user with attached interactables, can the user use them?
     isSlashCommand:boolean; // Can this command be executed with discord slash commands?
-    helpEmbedPage:number; 
     removeInvoker:boolean; // if true, removes the message that invoked the command.
     linkedToGuild:boolean; // defines if the command can be executed without configuring a static guild id in the config
     isMessageCommand:boolean;
@@ -36,9 +35,10 @@ export interface InputSchema {
     parameters: any;
     interaction: any;
     slashCommand: boolean;
-    speedTest:number;
+    speedTest: number;
     performance: any;
     directMessage: boolean;
+    removeInvoker?: Function;
 }
 
 export interface ParamtersSchema {
@@ -85,7 +85,6 @@ const commandTemplate:Schema = {
     interactionsInDm: true, // If a msg is sent to the user with attached interactables, can the user use them?
     isSlashCommand: true, // Can this command be executed with discord slash commands?
     isMessageCommand: true, // Can this command be executed with a plain text message in a guild?
-    helpEmbedPage: 0, 
 
     buttonInteraction: function(input:InputSchema){},
     slashInteraction: function(input:InputSchema){},

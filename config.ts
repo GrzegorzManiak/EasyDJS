@@ -8,7 +8,7 @@ export interface Schema {
     token: string;
 };
 
-let ConfigValues:Schema = {
+const ConfigValues:Schema = {
     log: false,
     allowslashcommands: true,
     allowdmcommands: false,
@@ -19,11 +19,11 @@ let ConfigValues:Schema = {
 };
 
 module.exports = {
+    get: () => {
+        return ConfigValues;
+    },
+
     set: (config: Schema) => {
         Object.assign(ConfigValues, config);
     },
-
-    get: () => {
-        return ConfigValues;
-    }
 }
