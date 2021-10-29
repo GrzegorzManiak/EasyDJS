@@ -1,7 +1,7 @@
 {
   "name": "easydjs",
   "version": "1.0.0",
-  "description": "",
+  "description": "A package designed to help you make bots with ease, built upon discord.js",
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon index.ts",
