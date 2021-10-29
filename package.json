@@ -12,7 +12,6 @@
     "url": "git+https://github.com/GrzegorzManiak/EasyDJS.git"
   },
   "author": "",
-  "type": "module",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/GrzegorzManiak/EasyDJS/issues"

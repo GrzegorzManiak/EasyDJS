@@ -1,5 +1,5 @@
 const bot = require("../"),
-    userHelper = require("../helpers/userClass.ts"),
+    userHelper = require("../helpers/userClass"),
     { performance } = require('perf_hooks'),
     config = bot.config.get();
 
