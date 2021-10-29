@@ -19,7 +19,7 @@ exports.handler = async(interaction:any) => {
     // If the command dosent exists, return
     if(command === undefined) return interaction.deferUpdate();
 
-    // can the button be clicked in a guild?
+    // can the menu be clicked in a guild?
     if(parameters?.executesInGuild !== true) return interaction.deferUpdate();
 
     let user:any = new userHelper.user(interaction.user.id, interaction.guild.id, bot.client),
@@ -30,7 +30,7 @@ exports.handler = async(interaction:any) => {
         case true:
             interaction.author = interaction.user;
 
-            command.buttonInteraction({ 
+            command.menuInteraction({ 
                 parameters, 
                 interaction, 
                 roles,

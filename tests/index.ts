@@ -10,7 +10,7 @@ easyDJS.config.set({
 
 easyDJS.commands.add({
     details: {
-        commandName: 'test',
+        commandName: 'testdm',
         commandDescription: 'a set of test functions'
     },
 
@@ -18,8 +18,8 @@ easyDJS.commands.add({
         user: ['test']
     },
     
-    executesInDm: true,
-    linkedToGuild: true,
+    executesInDm: false,
+    linkedToGuild: false,
     isMessageCommand: false,
 
     mainFunc: function(input:any){
@@ -36,12 +36,37 @@ easyDJS.commands.add({
             let testButton = new easyDJS.discordJS.MessageActionRow()
                 .addComponents(
                     new easyDJS.discordJS.MessageButton()
-                    .setCustomId(easyDJS.createCustomID('test', { action: 'test' }))
+                    .setCustomId(easyDJS.createCustomID({ 
+                        commandName: 'testdm',
+                        action: 'test',
+                        executesInDm: true,
+                    }))
                     .setLabel("Test")
                     .setStyle('DANGER')
                 )
 
-            input.interaction.reply({
+            input.interaction.user.send({
+                embeds: mainEmbed,
+                components: [testButton],
+            })
+        }
+
+        else if(input.parameters[1][0].value === 'menu') {
+            let testButton = new easyDJS.discordJS.MessageActionRow()
+                .addComponents(
+                    new easyDJS.discordJS.MessageSelectMenu()
+                    .setCustomId(easyDJS.createCustomID({ 
+                        commandName: 'testdm',
+                        action: 'test2',
+                        executesInDm: true,
+                    }))
+                    .addOptions([
+                        { label: '1', value: '1' },
+                        { label: '2', value: '2' },
+                    ])
+                )
+
+            input.interaction.user.send({
                 embeds: mainEmbed,
                 components: [testButton],
             })
@@ -49,7 +74,17 @@ easyDJS.commands.add({
     },
 
     buttonInteraction: function(input:any){
-        console.log(input)
+        input.interaction.reply({ 
+            content:`<@${input.interaction.user.id}>, Successfull`,
+            ephemeral: true
+        });
+    },
+
+    menuInteraction: function(input:any){
+        input.interaction.reply({ 
+            content:`<@${input.interaction.user.id}>, Successfull`,
+            ephemeral: true
+        });
     },
 
     parameters: [
@@ -74,20 +109,97 @@ easyDJS.commands.add({
 
 easyDJS.commands.add({
     details: {
-        commandName: 'test2',
-        commandDescription: 'test2'
+        commandName: 'test',
+        commandDescription: 'a set of test functions'
     },
 
     roles: {
         user: ['test']
     },
-
-    executesInDm: true,
+    
+    executesInDm: false,
     linkedToGuild: false,
+    isMessageCommand: false,
 
     mainFunc: function(input:any){
-        console.log(input)
-    }
+        let mainEmbed = [{
+            color: 0x0099ff,
+            title: 'Test command',
+            description: '',
+            footer: {
+                text: `Test Command`,
+            },
+        }];
+
+        if(input.parameters[1][0].value === 'button') {
+            let testButton = new easyDJS.discordJS.MessageActionRow()
+                .addComponents(
+                    new easyDJS.discordJS.MessageButton()
+                    .setCustomId(easyDJS.createCustomID({ 
+                        commandName: 'test',
+                        action: 'test',
+                        executesInDm: true,
+                    }))
+                    .setLabel("Test")
+                    .setStyle('DANGER')
+                )
+
+            input.interaction.reply({
+                embeds: mainEmbed,
+                components: [testButton],
+            })
+        }
+
+        else if(input.parameters[1][0].value === 'menu') {
+            let testButton = new easyDJS.discordJS.MessageActionRow()
+                .addComponents(
+                    new easyDJS.discordJS.MessageSelectMenu()
+                    .setCustomId(easyDJS.createCustomID({ 
+                        commandName: 'test',
+                        action: 'test2',
+                        executesInDm: true,
+                    }))
+                    .addOptions([
+                        { label: '1', value: '1' },
+                        { label: '2', value: '2' },
+                    ])
+                )
+
+            input.interaction.reply({
+                embeds: mainEmbed,
+                components: [testButton],
+            })
+        }
+    },
+
+    buttonInteraction: function(input:any){
+        input.interaction.channel.send({content:'Works!'})
+        input.interaction.deferUpdate();
+    },
+
+    menuInteraction: function(input:any){
+        input.interaction.channel.send({content:'Works!'})
+        input.interaction.deferUpdate();
+    },
+
+    parameters: [
+        { 
+            type: 'string',
+            name: 'type', 
+            description: 'a command that spawns in a test message', 
+            required: true,
+            choices: [
+                {
+                    name: 'button',
+                    value: 'button'
+                },
+                {
+                    name: 'menu',
+                    value: 'menu'
+                }
+            ]
+        }
+    ]
 });
 
 easyDJS.commands.add({

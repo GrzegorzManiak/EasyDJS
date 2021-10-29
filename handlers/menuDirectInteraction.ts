@@ -19,7 +19,7 @@ exports.handler = async(interaction:any) => {
     // If the command dosent exists, return
     if(command === undefined) return interaction.deferUpdate();
 
-    // can the button be clicked in a dm?
+    // can the menu be clicked in a dm?
     if(parameters?.executesInDm !== true) return interaction.deferUpdate();
 
     // If the bot isint configured correctly, return and allert
@@ -29,17 +29,17 @@ exports.handler = async(interaction:any) => {
         );
     
     // Dose this command require a guildid to be set to function?
-    switch ((parameters.linkedToGuild as boolean)) {
+    switch ((parameters?.linkedToGuild as boolean)) {
         case true:
-            let user:any = new userHelper.user(interaction.user.id, config.guildid , bot.client),
+            let user:any = new userHelper.user(interaction.user.id, config.guildid, bot.client),
                 roles:string[] = await user.getRolesName(),
                 hasPermissions:boolean = await user.hasRoles(command?.roles?.user) || config?.devid?.includes(interaction?.user?.id) || false;
-            
+
             switch (hasPermissions) {
                 case true:
                     interaction.author = interaction.user;
 
-                    command.buttonInteraction({ 
+                    command.menuInteraction({ 
                         parameters, 
                         interaction, 
                         roles,
@@ -61,7 +61,7 @@ exports.handler = async(interaction:any) => {
             break;
 
         case false:
-            return command.buttonInteraction({
+            return command.menuInteraction({
                 parameters,
                 interaction,
                 speedTest,

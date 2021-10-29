@@ -25,18 +25,6 @@ export interface Schema {
     removeInvoker:boolean; // if true, removes the message that invoked the command.
     linkedToGuild:boolean; // defines if the command can be executed without configuring a static guild id in the config
     isMessageCommand:boolean;
-    
-    button: {
-        executesInDm: boolean;
-        executesInGuild: boolean;
-        linkedToGuild: boolean,
-    };
-
-    menu: {
-        executesInDm: boolean;
-        executesInGuild: boolean;
-        linkedToGuild: boolean,
-    };
 
     buttonInteraction:Function;
     slashInteraction:Function;
@@ -98,18 +86,6 @@ const commandTemplate:Schema = {
     isSlashCommand: true, // Can this command be executed with discord slash commands?
     isMessageCommand: true, // Can this command be executed with a plain text message in a guild?
     helpEmbedPage: 0, 
-
-    button:{
-        executesInDm: false,
-        executesInGuild: true,
-        linkedToGuild: true,
-    },
-
-    menu:{
-        executesInDm: false,
-        executesInGuild: true,
-        linkedToGuild: true,
-    },
 
     buttonInteraction: function(input:InputSchema){},
     slashInteraction: function(input:InputSchema){},

@@ -19,7 +19,9 @@
   "homepage": "https://github.com/GrzegorzManiak/EasyDJS#readme",
   "dependencies": {
     "discord.js": "^13.2.0",
-    "simpl.db": "^2.3.5"
+    "lzutf8": "^0.6.0",
+    "simpl.db": "^2.3.5",
+    "smaz": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.6"

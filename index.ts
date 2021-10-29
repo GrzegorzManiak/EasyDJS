@@ -45,28 +45,57 @@ client.on('interactionCreate', async(interaction: any) => {
             require('./handlers/buttonGuildInteraction').handler(interaction); 
     }
 
-    else if (interaction?.componentType === 'SELECT_MENU')
-        require('./handlers/menuInteractionHandler').handler(interaction);
+    else if (interaction?.componentType === 'SELECT_MENU') {
+        if(interaction.guildId === null)
+            require('./handlers/menuDirectInteraction').handler(interaction); 
+        
+        else 
+            require('./handlers/menuGuildInteraction').handler(interaction); 
+    }
 
     else if (interaction?.commandName) 
         require('./handlers/slashCommand').handler(interaction);
 });
 
-function createCustomID(commandName:string, parameters:any = {}):string {
-    parameters.commandName = commandName.toLowerCase();
-    let base64 = Buffer.from(JSON.stringify(parameters), 'utf8').toString('base64');
-    return base64;
+export interface ParametersSchema {
+    commandName: string;
+    executesInDm: boolean;
+    executesInGuild: boolean;
+    linkedToGuild: boolean;
+    value?: any;
 }
 
-function decodeCustomID(base64:string):any {
-    let json:string = Buffer.from(base64, "base64").toString("utf8");
-    return JSON.parse(json);
+function createCustomID(parameters:ParametersSchema):string {
+    let parametersTemplate:any = {
+        1: parameters.commandName || '', //Command name
+        2: parameters.executesInDm || false, //Executes in dm
+        3: parameters.executesInGuild || true, //Executes in guild 
+        4: parameters.linkedToGuild || true, //linked To guild
+        5: parameters.value || '' // value
+    }
+
+    let json = JSON.stringify(parametersTemplate);
+    return json;
+}
+
+function decodeCustomID(json:string):ParametersSchema {
+    let obj:any = JSON.parse(json);
+
+    let decodedObject:ParametersSchema = {
+        commandName: obj['1'],
+        executesInDm: obj['2'],
+        executesInGuild: obj['3'],
+        linkedToGuild: obj['4'],
+        value: obj['5'],
+    }
+
+    return decodedObject;
 }
 
 module.exports = {
     start: () => start(),
     decodeCustomID: (base64:string):any => decodeCustomID(base64),
-    createCustomID: (commandName:string, parameters?:any):string => createCustomID(commandName, parameters),
+    createCustomID: (parameters:ParametersSchema):string => createCustomID(parameters),
     config: configHelper,
     discordJS: discordJS,
     commands: commandsHelper,
