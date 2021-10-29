@@ -36,6 +36,7 @@ exports.handler = async(interaction:any) => {
             'You havent defined guildid in the config, dm commands that have "linkedToGuild" set to true wont work without a guildid.'
         );
     
+    // Dose this command require a guildid to be set to function?
     switch ((command.linkedToGuild as boolean)) {
         case true:
             let user: any = new userHelper.user(interaction.author.id, config.guildid, bot.client), // get the user

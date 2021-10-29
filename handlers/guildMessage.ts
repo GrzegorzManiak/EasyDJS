@@ -24,6 +24,9 @@ exports.handler = async(interaction:any) => {
     // If the command dosent exists, return
     if(command === undefined) return;
 
+    // Can this command be executed as a message in the guild?
+    if(command.isMessageCommand !== true) return;
+
     let user:any = new userHelper.user(interaction.author.id, interaction.guild.id, bot.client),
         roles:string[] = await user.getRolesName(),
         hasPermissions:boolean = await user.hasRoles(command?.roles?.user) || config?.devid?.includes(interaction?.author?.id) || false;
@@ -33,12 +36,12 @@ exports.handler = async(interaction:any) => {
             command.mainFunc({ 
                 parameters, 
                 interaction, 
-                slashCommand: false, 
-                directMessage: false,
                 roles,
                 user,
                 speedTest,
-                performance
+                performance,
+                slashCommand: false, 
+                directMessage: false,
             });
             if(command.removeInvoker === true) interaction.delete().catch();
             break;

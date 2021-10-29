@@ -37,8 +37,13 @@ client.on('messageCreate', async(interaction: any) => {
 });
 
 client.on('interactionCreate', async(interaction: any) => {
-    if (interaction?.componentType === 'BUTTON') 
-        require('./handlers/buttonInteractionHandler').handler(interaction); 
+    if (interaction?.componentType === 'BUTTON') {
+        if(interaction.guildId === null)
+            require('./handlers/buttonDirectInteraction').handler(interaction); 
+        
+        else 
+            require('./handlers/buttonGuildInteraction').handler(interaction); 
+    }
 
     else if (interaction?.componentType === 'SELECT_MENU')
         require('./handlers/menuInteractionHandler').handler(interaction);
@@ -47,9 +52,23 @@ client.on('interactionCreate', async(interaction: any) => {
         require('./handlers/slashCommand').handler(interaction);
 });
 
+function createCustomID(commandName:string, parameters:any = {}):string {
+    parameters.commandName = commandName.toLowerCase();
+    let base64 = Buffer.from(JSON.stringify(parameters), 'utf8').toString('base64');
+    return base64;
+}
+
+function decodeCustomID(base64:string):any {
+    let json:string = Buffer.from(base64, "base64").toString("utf8");
+    return JSON.parse(json);
+}
+
 module.exports = {
     start: () => start(),
+    decodeCustomID: (base64:string):any => decodeCustomID(base64),
+    createCustomID: (commandName:string, parameters?:any):string => createCustomID(commandName, parameters),
     config: configHelper,
+    discordJS: discordJS,
     commands: commandsHelper,
     client: client
 }

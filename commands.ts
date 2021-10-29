@@ -1,6 +1,7 @@
 let addedCommands:any = {};
 const commandHistory:any = {};
 
+import { triggerAsyncId } from 'async_hooks';
 import { client } from './index';
 
 export interface Schema {
@@ -23,11 +24,23 @@ export interface Schema {
     helpEmbedPage:number; 
     removeInvoker:boolean; // if true, removes the message that invoked the command.
     linkedToGuild:boolean; // defines if the command can be executed without configuring a static guild id in the config
+    isMessageCommand:boolean;
+    
+    button: {
+        executesInDm: boolean;
+        executesInGuild: boolean;
+        linkedToGuild: boolean,
+    };
 
-    buttonInteraction?:Function;
-    slashInteraction?:Function;
-    menuInteraction?:Function;
+    menu: {
+        executesInDm: boolean;
+        executesInGuild: boolean;
+        linkedToGuild: boolean,
+    };
 
+    buttonInteraction:Function;
+    slashInteraction:Function;
+    menuInteraction:Function;
     mainFunc:Function
 };
 
@@ -51,7 +64,18 @@ export interface ParamtersSchema {
     }]
 }
 
-const OPTION_TYPES:string[] = [ 'STRING', 'INTEGER', 'NUMBER', 'BOOLEAN', 'USER', 'CHANNEL', 'ROLE', 'MENTIONABLE', 'SUB_COMMAND', 'SUB_COMMAND_GROUP ' ];
+const OPTION_TYPES:string[] = [ 
+    'STRING', 
+    'INTEGER', 
+    'NUMBER', 
+    'BOOLEAN', 
+    'USER', 
+    'CHANNEL', 
+    'ROLE', 
+    'MENTIONABLE', 
+    'SUB_COMMAND', 
+    'SUB_COMMAND_GROUP' 
+];
 
 const commandTemplate:Schema = {
     details: {
@@ -72,8 +96,24 @@ const commandTemplate:Schema = {
     removeInvoker: true,
     interactionsInDm: true, // If a msg is sent to the user with attached interactables, can the user use them?
     isSlashCommand: true, // Can this command be executed with discord slash commands?
+    isMessageCommand: true, // Can this command be executed with a plain text message in a guild?
     helpEmbedPage: 0, 
 
+    button:{
+        executesInDm: false,
+        executesInGuild: true,
+        linkedToGuild: true,
+    },
+
+    menu:{
+        executesInDm: false,
+        executesInGuild: true,
+        linkedToGuild: true,
+    },
+
+    buttonInteraction: function(input:InputSchema){},
+    slashInteraction: function(input:InputSchema){},
+    menuInteraction: function(input:InputSchema){},
     mainFunc: function(input:InputSchema){}
 };
 
@@ -147,16 +187,12 @@ function loadSlashCommands(global:boolean) {
                     param.choices = parameter.choices;
 
                     slashCommand.options = [...slashCommand.options, param ];
-
-                    console.log(parameter)
                 });
 
-                console.log(slashCommand)
                 commands.create(slashCommand).catch((err:any) => {
-                    console.log(err)
-
                     // You need to allow the bot to add slash commands to your server, most people forget about this and get confused about the error.
                     if(err.httpStatus == 403) console.log(`You need to give the bot oauth the "bot" oauth2 premision to use slash commands on [${guild.id} / ${guild.name}] => https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=applications.commands%20bot`);
+                    else console.log(err);
                 });
             })
         })

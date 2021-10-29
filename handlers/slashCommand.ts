@@ -15,7 +15,7 @@ exports.handler = async(interaction:any) =>{
     // start a performance timer
     let speedTest:number = performance.now();
     
-    let parameters:string[] = [interaction.commandName];
+    let parameters:string[] = [interaction.commandName.toLowerCase(), interaction.options._hoistedOptions];
 
     // Check if the command exists
     let command:CommandSchema = bot.commands.get(parameters[0]);

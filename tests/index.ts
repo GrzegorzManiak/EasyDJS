@@ -11,7 +11,7 @@ easyDJS.config.set({
 easyDJS.commands.add({
     details: {
         commandName: 'test',
-        commandDescription: 'test'
+        commandDescription: 'a set of test functions'
     },
 
     roles: {
@@ -20,25 +20,52 @@ easyDJS.commands.add({
     
     executesInDm: true,
     linkedToGuild: true,
+    isMessageCommand: false,
 
     mainFunc: function(input:any){
-        console.log('1')
+        let mainEmbed = [{
+            color: 0x0099ff,
+            title: 'Test command',
+            description: '',
+            footer: {
+                text: `Test Command`,
+            },
+        }];
+
+        if(input.parameters[1][0].value === 'button') {
+            let testButton = new easyDJS.discordJS.MessageActionRow()
+                .addComponents(
+                    new easyDJS.discordJS.MessageButton()
+                    .setCustomId(easyDJS.createCustomID('test', { action: 'test' }))
+                    .setLabel("Test")
+                    .setStyle('DANGER')
+                )
+
+            input.interaction.reply({
+                embeds: mainEmbed,
+                components: [testButton],
+            })
+        }
+    },
+
+    buttonInteraction: function(input:any){
+        console.log(input)
     },
 
     parameters: [
         { 
             type: 'string',
-            name: 'channel1', 
-            description: 'test', 
-            required: false,
+            name: 'type', 
+            description: 'a command that spawns in a test message', 
+            required: true,
             choices: [
                 {
-                    name: 'foo1',
-                    value: 'fal1'
+                    name: 'button',
+                    value: 'button'
                 },
                 {
-                    name: 'foo2',
-                    value: 'fal2'
+                    name: 'menu',
+                    value: 'menu'
                 }
             ]
         }
@@ -80,3 +107,6 @@ easyDJS.commands.add({
 easyDJS.commands.loadSlashCommands(true)
 
 easyDJS.start();
+
+//let encoded:string = easyDJS.createCustomID('poo', { pee: 'poo' })
+//console.log(encoded, easyDJS.decodeCustomID(encoded))
