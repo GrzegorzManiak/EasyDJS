@@ -106,13 +106,73 @@ easyDJS.commands.add({
         }
     ]
 });
+easyDJS.commands.add({
+    details: {
+        commandName: 'ban',
+        commandDescription: 'bans a user'
+    },
+
+    isMessageCommand: false,
+
+    roles: {
+        user: ['test']
+    },
+
+    mainFunc: async function(input:any){
+        console.log(input.parameters[1][0].value);
+        let user:any = new easyDJS.userHelper.user(input.parameters[1][0].value, input.interaction.guild.id, easyDJS.client)
+        await user.getUser();
+        let banned:boolean = await user.ban({ reason:'ur retarded' });
+        console.log(banned);
+        input.interaction.reply('banned');
+    },
+
+    parameters: [
+        { 
+            type: 'user',
+            name: 'user', 
+            description: 'the user to ban', 
+            required: true,
+        }
+    ]
+});
+
+easyDJS.commands.add({
+    details: {
+        commandName: 'unban',
+        commandDescription: 'unbans a user'
+    },
+
+    isMessageCommand: false,
+
+    roles: {
+        user: ['test']
+    },
+
+    mainFunc: async function(input:any){
+        console.log(input.parameters[1][0].value);
+        let user:any = new easyDJS.userHelper.user(input.parameters[1][0].value, input.interaction.guild.id, easyDJS.client)
+        let banned:boolean = await user.unban();
+        console.log(banned);
+        input.interaction.reply('unbanned');
+    },
+
+    parameters: [
+        { 
+            type: 'string',
+            name: 'user', 
+            description: 'the iduser to unban', 
+            required: true,
+        }
+    ]
+});
 
 easyDJS.commands.add({
     details: {
         commandName: 'test',
         commandDescription: 'a set of test functions'
     },
-
+    
     roles: {
         user: ['test']
     },
@@ -219,6 +279,8 @@ easyDJS.commands.add({
         })
     }
 });
+
+
 
 easyDJS.commands.loadSlashCommands(true)
 

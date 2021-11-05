@@ -1,13 +1,50 @@
+interface banReason {
+    reason:string;
+    days?:number;
+}
 
 exports.user = class user {
+    #userIdentifier:string;
     #client:any;
     #user:any;
     #guild:any;
 
+    //--// Bans //--//
+    #banned:boolean;
+    private gateKeeper():boolean {
+        if(this.#guild === undefined) return false;
+        if(this.#userIdentifier === undefined) return false;
+    }
+
+    ban(reason?:banReason){
+        if(this.gateKeeper() !== true) return false;
+        return this.#user.then((usr:any) => {
+            usr.ban(reason);
+            return true;
+        })
+    }
+
+    unban(){
+        if(this.gateKeeper() !== true) return false;
+        this.#guild.members.unban(this.#userIdentifier);
+    }
+
+    kick(reason?:string) {
+        return this.#user.then((usr:any) => {
+            usr.kick(reason)
+                .then(() => { return true; })
+                .catch(() => { return false; });
+        })
+    }
+
+    //--// Bans End //--//
+
     constructor(userIdentifier:string, guildIdentifier:string, client:any){
+        this.#userIdentifier = userIdentifier;
         this.#client = client; 
         this.#guild = client?.guilds?.cache?.get(guildIdentifier); // get the guild
         this.#user = this.#guild?.members?.fetch(userIdentifier); // get the user
+        this.getUser();
     }
 
     getUser(){
@@ -15,10 +52,6 @@ exports.user = class user {
         return this.#user.then((usr:any) => {
             return usr;
         })
-    }
-
-    getGuild(){
-        return this.#guild;
     }
 
     sendMessage(content:any){

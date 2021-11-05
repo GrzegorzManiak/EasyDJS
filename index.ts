@@ -98,6 +98,7 @@ module.exports = {
     createCustomID: (parameters:ParametersSchema):string => createCustomID(parameters),
     config: configHelper,
     discordJS: discordJS,
+    userHelper: require('./helpers/userClass'),
     commands: commandsHelper,
     client: client
 }
